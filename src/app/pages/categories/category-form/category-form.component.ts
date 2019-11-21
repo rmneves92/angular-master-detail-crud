@@ -20,7 +20,7 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
   categoryForm: FormGroup;
   pageTitle: string;
   serverErrorMessages: string[] = null; // Mensagens retornadas do servidor
-  submittingForm: boolean = false; // Bloqueia o botão de enviar 
+  submittingForm: boolean = false; // Bloqueia o botão de enviar
   category: Category = new Category();
 
   constructor(
@@ -90,10 +90,10 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
   }
 
   private createCategory() {
-    const category: Category = Object.assign(new Category, this.categoryForm.value);
+    const category: Category = Object.assign(new Category(), this.categoryForm.value);
     this.categoryService.create(category)
       .subscribe(
-        category => this.actionsForSuccess(success),
+        category => this.actionsForSuccess(category),
         error => this.actionsForError(error)
       )
   }
@@ -108,12 +108,21 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
     this.router.navigateByUrl('categories', { skipLocationChange: true /*Não adiciona no histórico do navegador*/ })
       .then(() => this.router.navigate(['categories', category.id, 'edit']));
 
-      
-      /* Exemplo de navegação:
-        - nomedosite.com/categories/new
-        - nomedosite.com/categories/
-        - nomedosite.com/categories/:id/edit
-      */
+
+    /* Exemplo de navegação:
+      - nomedosite.com/categories/new
+      - nomedosite.com/categories/
+      - nomedosite.com/categories/:id/edit
+    */
+  }
+
+  private actionsForError(error) {
+    toastr.error("Ocorreu um erro ao processar a sua solicitação!");
+
+    this.submittingForm = false;
+
+    if (error.status === 422)
+      this.serverErrorMessages = JSON.parse(error._body).errors;
   }
 
 }
