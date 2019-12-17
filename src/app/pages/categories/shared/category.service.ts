@@ -29,15 +29,15 @@ export class CategoryService {
     )
   }
 
-  create(category: Category): Observable<Category[]> {
+  create(category: Category): Observable<Category> {
     return this.http.post(this.apiPath, category).pipe(
       catchError(this.handleError),
-      map(this.jsonDataToCategories)
+      map(this.jsonDataToCategory)
     )
   }
 
   update(category: Category): Observable<Category> {
-    const url = `${this.apiPath}/${category}`;
+    const url = `${this.apiPath}/${category.id}`;
 
     return this.http.put(url, category).pipe(
       catchError(this.handleError),

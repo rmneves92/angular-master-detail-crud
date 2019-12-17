@@ -91,6 +91,7 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
 
   private createCategory() {
     const category: Category = Object.assign(new Category(), this.categoryForm.value);
+
     this.categoryService.create(category)
       .subscribe(
         category => this.actionsForSuccess(category),
@@ -99,7 +100,13 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
   }
 
   private updateCategory() {
+    const category: Category = Object.assign(new Category(), this.categoryForm.value);
 
+    this.categoryService.update(category)
+      .subscribe(
+        category => this.actionsForSuccess(category),
+        error => this.actionsForError(error)
+      )
   }
 
   private actionsForSuccess(category: Category) {
@@ -123,6 +130,8 @@ export class CategoryFormComponent implements OnInit, AfterContentChecked {
 
     if (error.status === 422)
       this.serverErrorMessages = JSON.parse(error._body).errors;
+    else
+      this.serverErrorMessages = ["Falha na comunicação com o servidor. Por favor, tente mais tarde."]
   }
 
 }
